@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>残業申請作成</title>
+    <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+    <div class="container">
+        <h1>残業申請作成</h1>
+        <nav>
+            <%= link_to 'ログアウト', destroy_user_session_path, data: { turbo_method: :delete } %>
+            <%= link_to '打刻', new_attendance_path %>
+            <%= link_to '残業申請一覧', overtime_requests_path %>
+            <%= link_to '残業報告', new_actual_overtime_request_path %>
+            <%= link_to '残業報告書', actual_overtime_requests_path %>
+        </nav>
+
+        <%= form_with(model: @overtime_request, local: true, html: { class: 'overtime-form' }) do |form| %>
+          <% if @overtime_request.errors.any? %>
+            <div id="error_explanation">
+              <h2><%= pluralize(@overtime_request.errors.count, "error") %> prohibited this overtime request from being saved:</h2>
+              <ul>
+                <% @overtime_request.errors.full_messages.each do |message| %>
+                  <li><%= message %></li>
+                <% end %>
+              </ul>
+            </div>
+          <% end %>
+
+          <div class="field">
+            <%= form.label :department, "部署" %>
+            <%= form.text_area :department %>
+          </div>
+
+          <div class="field">
+            <%= form.label :work_pattern_id, "勤務パターン" %>
+            <% if @pattern %>
+              <%= @pattern.name %>
+              <%= form.hidden_field :work_pattern_id, value: @pattern.id %>
+            <% else %>
+              <p>勤務パターンが見つかりません</p>
+            <% end %>
+          </div>
+
+          <div class="field">
+            <%= form.label :start_time, "残業開始時刻" %>
+            <%= form.datetime_select :start_time %>
+          </div>
+
+          <div class="field">
+            <%= form.label :end_time, "残業終了時刻" %>
+            <%= form.datetime_select :end_time %>
+          </div>
+
+          <div class="field">
+            <%= form.label :reason, "残業理由" %>
+            <%= form.text_area :reason %>
+          </div>
+
+          <div class="actions">
+            <%= form.submit "残業申請", class: "btn btn-primary" %>
+          </div>
+        <% end %>
+    </div>
+</body>
+</html>

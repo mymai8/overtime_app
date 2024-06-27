@@ -1,0 +1,13 @@
+<h1>Actual Overtime Request</h1>
+
+<p>
+  <strong>Actual Start Time:</strong>
+  <%= @actual_overtime_request.actual_start_time %>
+</p>
+<p>
+  <strong>Actual End Time:</strong>
+  <%= @actual_overtime_request.actual_end_time %>
+</p>
+
+<%= link_to 'Edit', edit_actual_overtime_request_path(@actual_overtime_request) %> |
+<%= link_to 'Back', overtime_requests_path %>

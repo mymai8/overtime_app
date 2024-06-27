@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>残業報告作成</title>
+    <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+    <div class="container">
+        <h1>残業報告作成</h1>
+        <nav>
+            <%= link_to 'ログアウト', destroy_user_session_path, data: { turbo_method: :delete } %>
+            <%= link_to '打刻', new_attendance_path %>
+            <%= link_to '残業申請', new_overtime_request_path %>
+            <%= link_to '残業申請一覧', overtime_requests_path %>
+            <%= link_to '残業報告一覧', actual_overtime_requests_path %>
+        </nav>
+
+        <%= form_with model: @actual_overtime_request, local: true, html: { class: 'form-with' } do |form| %>
+          <% if @actual_overtime_request.errors.any? %>
+            <div id="error_explanation">
+              <h2><%= pluralize(@actual_overtime_request.errors.count, "error") %> prohibited this request from being saved:</h2>
+              <ul>
+                <% @actual_overtime_request.errors.full_messages.each do |message| %>
+                  <li><%= message %></li>
+                <% end %>
+              </ul>
+            </div>
+          <% end %>
+
+          <div class="field">
+            <%= form.label :actual_start_time, "実残業開始時刻" %>
+            <%= form.datetime_select :actual_start_time %>
+          </div>
+
+          <div class="field">
+            <%= form.label :actual_end_time, "実残業終了時刻" %>
+            <%= form.datetime_select :actual_end_time %>
+          </div>
+
+          <div class="field">
+            <%= form.label :break_time, "うち休憩時間" %>
+            <%= form.number_field :break_time %>時間
+          </div>
+
+          <div class="field">
+            <%= form.label :overtime_report, "残業報告" %>
+            <%= form.text_area :overtime_report %>
+          </div>
+
+          <div class="actions">
+            <%= form.submit "残業報告", class: "btn btn-primary" %>
+          </div>
+        <% end %>
+    </div>
+</body>
+</html>

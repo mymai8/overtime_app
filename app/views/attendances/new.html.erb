@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>出退勤管理</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="table.css">
+    <link rel="stylesheet" href="attendances.css">
+</head>
+<body>
+    <div class="container">
+        <h1><%= current_user.name %></h1>
+        <nav>
+            <%= link_to 'ログアウト', destroy_user_session_path, data: { turbo_method: :delete } %>
+            <%= link_to '残業申請', new_overtime_request_path %>
+            <%= link_to '残業申請一覧', overtime_requests_path %>
+            <%= link_to '残業報告', new_actual_overtime_request_path %>
+            <%= link_to '残業報告書', actual_overtime_requests_path %>
+        </nav>
+
+        <%= form_for(@attendance, html: { class: 'attendance-form' }) do |f| %>
+          <% if !@is_clocked_in || @is_clocked_out %>
+            <%= f.hidden_field :clock_in_at, value: Time.zone.now %>
+            <%= f.submit "出勤", class: "btn btn-primary" %>
+          <% elsif @is_clocked_in && !@is_clocked_out %>
+            <%= f.hidden_field :clock_out_at, value: Time.zone.now %>
+            <%= f.submit "退勤", class: "btn btn-primary" %>
+          <% end %>
+        <% end %>
+
+        <div class="attendance-sheet">
+          <table>
+            <tr>
+              <th>出勤時刻</th>
+              <th>退勤時刻</th>
+              <th>勤務パターン</th>
+            </tr>
+            <% @attendances.each do |attendance| %>
+              <tr>
+                <td><%= l attendance.clock_in_at unless attendance.clock_in_at.nil? %></td>
+                <td><%= l attendance.clock_out_at unless attendance.clock_out_at.nil? %></td>
+                <td>
+                <% if attendance.clock_in_at != nil %>
+                  <%= @pattern.name %>
+                <% end %>
+                </td>
+              </tr>
+            <% end %>
+          </table>
+        </div>
+    </div>
+</body>
+</html>

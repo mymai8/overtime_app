@@ -1,0 +1,11 @@
+wb = xlsx_package.workbook
+wb.add_worksheet(name: "Overtime Request") do |sheet|
+  sheet.add_row ["部署名", "勤務パターン", "残業開始予定", "残業終了予定", "残業理由"]
+  sheet.add_row [
+    @overtime_request.department,
+    @overtime_request.work_pattern,
+    @overtime_request.start_time,
+    @overtime_request.end_time,
+    @overtime_request.reason
+  ]
+end

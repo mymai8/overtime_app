@@ -1,0 +1,7 @@
+<h1></h1>
+<%= link_to 'ログアウト', destroy_user_session_path, data: { turbo_method: :delete } %>
+<%= link_to '打刻', attendances_new_path %>
+<%= link_to '残業申請', overtime_requests_new_path %>
+<%= link_to '残業申請一覧', overtime_requests_path %>
+<%= link_to '残業報告', new_actual_overtime_request_path %>
+<%= link_to '残業報告一覧', actual_overtime_requests_path %>

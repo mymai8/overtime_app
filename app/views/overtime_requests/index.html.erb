@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>残業申請一覧</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="table.css">
+</head>
+<body>
+    <div class="container">
+        <h1>残業申請一覧</h1>
+        <nav>
+            <%= link_to 'ログアウト', destroy_user_session_path, data: { turbo_method: :delete } %>
+            <%= link_to '打刻', new_attendance_path %>
+            <%= link_to '残業申請', new_overtime_request_path %>
+            <%= link_to '残業報告', new_actual_overtime_request_path %>
+            <%= link_to '残業報告書', actual_overtime_requests_path %>
+        </nav>
+
+        <div class="attendance-sheet">
+          <table>
+            <thead>
+              <tr>
+                <th>部署名</th>
+                <th>勤務パターン</th>
+                <th>残業開始予定</th>
+                <th>残業終了予定</th>
+                <th>残業理由</th>
+                <th>エクスポート</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @overtime_requests.each do |request| %>
+                <tr>
+                  <td data-label="部署名"><%= request.department %></td>
+                  <td data-label="勤務パターン"><%= @pattern.name %></td>
+                  <td data-label="残業開始予定"><%= l request.start_time %></td>
+                  <td data-label="残業終了予定"><%= l request.end_time %></td>
+                  <td data-label="残業理由"><%= request.reason %></td>
+                  <td data-label="エクスポート"><%= link_to 'エクスポート', export_overtime_request_path(request, format: :xlsx) %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+    </div>
+</body>
+</html>

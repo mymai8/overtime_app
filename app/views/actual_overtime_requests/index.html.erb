@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>残業報告書</title>
+    <link rel="stylesheet" href="table.css">
+</head>
+<body>
+    <div class="container">
+      <h1>残業報告書</h1>
+      <nav>
+        <%= link_to 'ログアウト', destroy_user_session_path, data: { turbo_method: :delete } %>
+        <%= link_to '打刻', new_attendance_path %>
+        <%= link_to '残業申請', new_overtime_request_path %>
+        <%= link_to '残業申請一覧', overtime_requests_path %>
+        <%= link_to '残業報告', new_actual_overtime_request_path %>
+      </nav>
+
+      <div class="attendance-sheet">
+        <table>
+          <thead>
+            <tr>
+              <th rowspan="2">実残業開始時刻</th>
+              <th rowspan="2">実残業終了時刻</th>
+              <th rowspan="2">うち休憩時間</th>
+              <th colspan="2">残業<br>平日日中</th>
+              <th colspan="2">残業<br>平日深夜早朝</th>
+              <th colspan="2">残業<br>休日日中</th>
+              <th colspan="2">残業<br>休日深夜早朝</th>
+              <th rowspan="2">エクスポート</th>
+            </tr>
+            <tr>
+              <th>~60h</th>
+              <th>60h~</th>
+              <th>~60h</th>
+              <th>60h~</th>
+              <th>~60h</th>
+              <th>60h~</th>
+              <th>~60h</th>
+              <th>60h~</th>
+            </tr>
+          </thead>
+            <tbody>
+              <% @actual_overtime_requests.each do |request| %>
+                <tr>
+                  <td><%= l request.actual_start_time %></td>
+                  <td><%= l request.actual_end_time %></td>
+                  <td><%= request.break_time %>時間</td>
+
+                      <% 
+                          start_time = request.actual_start_time
+                          end_time = request.actual_end_time
+                          hours = (end_time - start_time) / 3600.0
+                          is_weekend = start_time.saturday? || start_time.sunday?
+                          is_night = start_time.hour < 5 || end_time.hour >= 22
+                      %>
+
+                  <% if request.break_time == 0 %>
+                    <td><%= hours < 60 && !is_weekend && !is_night ? number_with_precision(hours, precision: 1) : '' %></td>
+                    <td><%= hours >= 60 && !is_weekend && !is_night ? number_with_precision(hours, precision: 1) : '' %></td>
+                    <td><%= hours < 60 && !is_weekend && is_night ? number_with_precision(hours, precision: 1) : '' %></td>
+                    <td><%= hours >= 60 && !is_weekend && is_night ? number_with_precision(hours, precision: 1) : '' %></td>
+                    <td><%= hours < 60 && is_weekend && !is_night ? number_with_precision(hours, precision: 1) : '' %></td>
+                    <td><%= hours >= 60 && is_weekend && !is_night ? number_with_precision(hours, precision: 1) : '' %></td>
+                    <td><%= hours < 60 && is_weekend && is_night ? number_with_precision(hours, precision: 1) : '' %></td>
+                    <td><%= hours >= 60 && is_weekend && is_night ? number_with_precision(hours, precision: 1) : '' %></td>
+                  <% else %>
+                    <% hours -= request.break_time %>
+                    <td><%= hours < 60 && !is_weekend && !is_night ? number_with_precision(hours, precision: 1) : '' %></td>
+                    <td><%= hours >= 60 && !is_weekend && !is_night ? number_with_precision(hours, precision: 1) : '' %></td>
+                    <td><%= hours < 60 && !is_weekend && is_night ? number_with_precision(hours, precision: 1) : '' %></td>
+                    <td><%= hours >= 60 && !is_weekend && is_night ? number_with_precision(hours, precision: 1) : '' %></td>
+                    <td><%= hours < 60 && is_weekend && !is_night ? number_with_precision(hours, precision: 1) : '' %></td>
+                    <td><%= hours >= 60 && is_weekend && !is_night ? number_with_precision(hours, precision: 1) : '' %></td>
+                    <td><%= hours < 60 && is_weekend && is_night ? number_with_precision(hours, precision: 1) : '' %></td>
+                    <td><%= hours >= 60 && is_weekend && is_night ? number_with_precision(hours, precision: 1) : '' %></td>
+                  <% end %>
+
+                  <td><%= link_to 'エクスポート', export_actual_overtime_request_path(request, format: :xlsx) %></td>
+                </tr>
+              <% end %>
+            </tbody>
+        </table>
+      </div>
+    </div>
+</body>
+</html>
